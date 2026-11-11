@@ -18,7 +18,7 @@ const facilitator = new HTTPFacilitatorClient({
 });
 
 const server = new x402ResourceServer(facilitator)
-  .register("eip155:84532", new ExactEvmScheme());
+  .register("eip155:8453", new ExactEvmScheme());
 
 app.get("/", c => c.json({
   name: "Text Analyzer API",
@@ -40,6 +40,14 @@ app.get("/openapi.json", c => c.json({
       post: {
         summary: "Analyze text",
         operationId: "analyzeText",
+          "x-payment-info": {
+            protocols: ["x402"],
+            price: {
+              mode: "fixed",
+              currency: "USD",
+              amount: "0.005"
+            }
+          },
         requestBody: {
           required: true,
           content: {
@@ -68,7 +76,7 @@ app.use("/paid", paymentMiddleware({
     accepts: [{
       scheme: "exact",
       price: "$0.005",
-      network: "eip155:84532",
+      network: "eip155:8453",
       payTo
     }],
     description: "Text Analyzer API",
@@ -116,4 +124,5 @@ serve({
 }, info => {
   console.log("Text Analyzer API running on port " + info.port);
 });
+
 
